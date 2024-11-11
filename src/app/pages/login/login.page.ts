@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+
 
 @Component({
   selector: 'app-login',
@@ -9,15 +11,28 @@ import { NavController } from '@ionic/angular';
 export class LoginPage {
   email: string = '';
   password: string= '';
+  
+  constructor(private afAuth: AngularFireAuth, 
+              private toastController: ToastController,
+              private navCtrl: NavController,) {}
 
-  constructor(private navCtrl: NavController) {}
-
+ 
   onLogin() {
-    if (this.email === 'admin' && this.password === 'admin') {
-      // Si el login es exitoso, redirigir a la página principal
-      this.navCtrl.navigateRoot('/home');
-    } else {
-      alert('Credenciales incorrectas');
-    }
+    this.afAuth.signInWithEmailAndPassword(this.email, this.password)
+      .then((result) => {
+        this.showToast('Inicio de sesion exitoso');
+        this.navCtrl.navigateForward('/home');
+      }).catch((error) => {
+        this.showToast(`Error al iniciar sesion {{error}}`);
+      });
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }
