@@ -1,0 +1,9 @@
+<div *ngIf="cars$ | async as cars; else loading">
+  <ul>
+    <li *ngFor="let car of cars">
+      {{ car.brand }} - {{ car.model }} ({{ car.year }})
+    </li>
+  </ul>
+</div>
+
+<ng-template #loading>Loading...</ng-template>

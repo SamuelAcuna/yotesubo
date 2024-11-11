@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-perfil',
