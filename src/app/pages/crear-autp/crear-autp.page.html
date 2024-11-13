@@ -15,27 +15,28 @@
       </ion-card-header>
   
       <ion-card-content>
-        <div class="image-container">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/2019_Toyota_Corolla_Icon_Tech_VVT-i_Hybrid_1.8.jpg/1200px-2019_Toyota_Corolla_Icon_Tech_VVT-i_Hybrid_1.8.jpg"  >
-        </div>
-        <ion-item>
-          <ion-label position="floating">Marca</ion-label>
-          <ion-input></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="floating">Modelo</ion-label>
-          <ion-input></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="floating">Patente</ion-label>
-          <ion-input></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Numeros de asientos</ion-label>
-          <ion-input slot="end" type="number" value="1" min="1" max="10" id="asientosDisponibles" readonly></ion-input>
+        
+        <form [formGroup]="carForm" (ngSubmit)="saveCar()">
+    
+      
+          <ion-item>
+            <ion-label position="floating">Marca</ion-label>
+            <ion-input formControlName="marca" type="text"></ion-input>
+          </ion-item>
+      
+          <ion-item>
+            <ion-label position="floating">Modelo</ion-label>
+            <ion-input formControlName="modelo" type="text"></ion-input>
+          </ion-item>
+      
+          <ion-item>
+            <ion-label position="floating">Año</ion-label>
+            <ion-input formControlName="anio" type="number"></ion-input>
+          </ion-item>
+      
+          <ion-item>
+            <ion-label>Numeros de asientos</ion-label>
+          <ion-input formControlName="capacidad" slot="end" type="number" value="1" min="1" max="10" id="asientosDisponibles" readonly></ion-input>
           <ion-buttons slot="end">
             <ion-button (click)="incrementSeats()">
               <ion-icon name="arrow-up"></ion-icon>
@@ -44,15 +45,20 @@
               <ion-icon name="arrow-down"></ion-icon>
             </ion-button>
           </ion-buttons>
-        </ion-item>
-        <ion-item>
-          <ion-label position="floating">Alias</ion-label>
-          <ion-input></ion-input>
-        </ion-item>
-  
-        <ion-button expand="full" color="primary">
-          Guardar Auto
-        </ion-button>
+          </ion-item>
+      
+          <ion-item>
+            <ion-label position="floating">Color</ion-label>
+            <ion-input formControlName="color" type="text"></ion-input>
+          </ion-item>
+      
+          <ion-item>
+            <ion-label position="floating">Patente</ion-label>
+            <ion-input formControlName="patente" type="text"></ion-input>
+          </ion-item>
+      
+          <ion-button expand="block" type="submit" >Guardar Vehículo</ion-button>
+        </form>
       </ion-card-content>
     </ion-card>
   </ion-content>

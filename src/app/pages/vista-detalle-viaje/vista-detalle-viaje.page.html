@@ -19,27 +19,31 @@
     <ion-card-content>
       <ion-item>
         <ion-label>Destino:</ion-label>
-        <ion-note slot="end">Concepción / Mall del centro</ion-note>
+        <ion-note slot="end">{{viaje?.comuna}}</ion-note>
       </ion-item>
       
       <ion-item>
-        <ion-label>Fecha y Hora:</ion-label>
-        <ion-note slot="end">2024-09-30 10:00 AM</ion-note>
+        <ion-label>Fecha:</ion-label>
+        <ion-note slot="end">{{fechaFormateada}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Hora:</ion-label>
+        <ion-note slot="end">{{viaje?.hora}}</ion-note>
       </ion-item>
       
       <ion-item>
         <ion-label>Asientos Disponibles:</ion-label>
-        <ion-note slot="end">1</ion-note>
+        <ion-note slot="end">{{viaje?.asientosDisponibles}}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Precio:</ion-label>
-        <ion-note slot="end">$1.200</ion-note>
+        <ion-note slot="end">{{viaje?.precio}}</ion-note>
       </ion-item>
 
       <ion-item>
         <ion-label>Estado:</ion-label>
         <ion-note slot="end">
-          <span class="estado aceptado">Disponible</span>
+          <span class="estado aceptado">{{viaje?.estado}}</span>
         </ion-note>
       </ion-item>
     </ion-card-content>
@@ -99,6 +103,6 @@
   <ion-button expand="full" color="primary" class="ion-margin-top" href="/vista-estado-viaje">
     Pedir Viaje
   </ion-button>
-
+  
   
 </ion-content>

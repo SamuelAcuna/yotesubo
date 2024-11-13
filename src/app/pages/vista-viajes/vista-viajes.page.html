@@ -1,83 +1,77 @@
-<ion-header >
-  <ion-toolbar color="secondary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="home"></ion-back-button>
-      
-    </ion-buttons>
-    <ion-title class="ion-text-capitalize ion-text-center" mode="md"> Viajes</ion-title>
-  </ion-toolbar>
-</ion-header>
 <ion-content class="ion-padding">
+  <!-- Selector de comuna -->
+  <ion-item>
+    <ion-select [(ngModel)]="comunaSeleccionada" interface="popover" slot="start" placeholder="Selecciona una comuna" (ionChange)="filtrarPorComuna()">
+      <ion-select-option value="">Todas</ion-select-option>
+      <ion-select-option value="Concepción">Concepción</ion-select-option>
+            <ion-select-option value="Talcahuano">Talcahuano</ion-select-option>
+            <ion-select-option value="San Pedro de la Paz">San Pedro de la Paz</ion-select-option>
+            <ion-select-option value="Chiguayante">Chiguayante</ion-select-option>
+            <ion-select-option value="Hualpén">Hualpén</ion-select-option>
+            <ion-select-option value="Penco">Penco</ion-select-option>
+            <ion-select-option value="Lota">Lota</ion-select-option>
+            <ion-select-option value="Tomé">Tomé</ion-select-option>
+            <ion-select-option value="Florida">Florida</ion-select-option>
+            <ion-select-option value="Hualqui">Hualqui</ion-select-option>
+            <ion-select-option value="Mulchén">Mulchén</ion-select-option>
+            <ion-select-option value="Quilleco">Quilleco</ion-select-option>
+            <ion-select-option value="Cabrero">Cabrero</ion-select-option>
+            <ion-select-option value="Nacimiento">Nacimiento</ion-select-option>
+            <ion-select-option value="Antuco">Antuco</ion-select-option>
+            <ion-select-option value="Penco">Penco</ion-select-option>
+            <ion-select-option value="San Rosendo">San Rosendo</ion-select-option>
+            <ion-select-option value="Negrete">Negrete</ion-select-option>
+            <ion-select-option value="Curanilahue">Curanilahue</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Mostrar los viajes filtrados -->
   <ion-grid>
     <ion-row>
-      <ion-item>
-        
-        <ion-select interface="popover" slot="start" placeholder="Comuna">
-          <ion-select-option value="Concepción">Concepción</ion-select-option>
-          <ion-select-option value="Talcahuano">Talcahuano</ion-select-option>
-          <ion-select-option value="San Pedro de la Paz">San Pedro de la Paz</ion-select-option>
-          <ion-select-option value="Chiguayante">Chiguayante</ion-select-option>
-          <ion-select-option value="Hualpén">Hualpén</ion-select-option>
-          <ion-select-option value="Penco">Penco</ion-select-option>
-          <ion-select-option value="Lota">Lota</ion-select-option>
-          <ion-select-option value="Coronel">Coronel</ion-select-option>
-          <ion-select-option value="Talcahuano">Talcahuano</ion-select-option>
-          <ion-select-option value="Florida">Florida</ion-select-option>
-          <ion-select-option value="Santa Juana">Santa Juana</ion-select-option>
-          <ion-select-option value="Santo Domingo">Santo Domingo</ion-select-option>
-          <ion-select-option value="Bío Bío">Bío Bío</ion-select-option>
-        </ion-select>
-     
-    </ion-item>
-    <ion-item >
-      <ion-select interface="popover" slot="start" placeholder="Sector">
-        <ion-select-option value="Plaza de la Independencia">Plaza de la Independencia</ion-select-option>
-        <ion-select-option value="Catedral de Concepción">Catedral de Concepción</ion-select-option>
-        <ion-select-option value="Parque Ecuador">Parque Ecuador</ion-select-option>
-        <ion-select-option value="Universidad de Concepción">Universidad de Concepción</ion-select-option>
-        <ion-select-option value="Mall Plaza El Trébol">Mall Plaza El Trébol</ion-select-option>
-        <ion-select-option value="Cerro Caracol">Cerro Caracol</ion-select-option>
-        <ion-select-option value="Barrio Universitario">Barrio Universitario</ion-select-option>
-        <ion-select-option value="Paseo Peatonal">Paseo Peatonal</ion-select-option>
-        <ion-select-option value="Sector Costanera">Sector Costanera</ion-select-option>
-      </ion-select>
-    </ion-item>
-      <ion-col size="12" size-md="6" size-lg="4">
+      <ion-col *ngFor="let viaje of viajes" size="12" size-md="6" size-lg="4">
         <ion-card>
-          <img alt="Silhouette of mountains" src="assets/img/centro_concepcion.png" />
+          <div [ngSwitch]="viaje.comuna">
+            
+            <img alt="Imagen del viaje" *ngSwitchDefault alt="Imagen por defecto" [src]="'assets/img/default.jpg'" />
+            <img *ngSwitchCase="'Concepción'" alt="Imagen de Concepción" [src]="'assets/img/concepcion.jpg'" />
+            <img *ngSwitchCase="'Talcahuano'" alt="Imagen de Talcahuano" [src]="'assets/img/talcahuano.jpg'" />
+            <img *ngSwitchCase="'San Pedro de la Paz'" alt="Imagen de San Pedro de la Paz" [src]="'assets/img/sanpedro.jpg'" />
+            <img *ngSwitchCase="'Chiguayante'" alt="Imagen de Chiguayante" [src]="'assets/img/chiguayante.jpg'" />
+            <img *ngSwitchCase="'Hualpén'" alt="Imagen de Hualpén" [src]="'assets/img/hualpen.jpg'" />
+            <img *ngSwitchCase="'Penco'" alt="Imagen de Penco" [src]="'assets/img/penco.jpg'" />
+            <img *ngSwitchCase="'Lota'" alt="Imagen de Lota" [src]="'assets/img/lota.jpg'" />
+            <img *ngSwitchCase="'Tomé'" alt="Imagen de Tomé" [src]="'assets/img/tome.jpg'" />
+            <img *ngSwitchCase="'Florida'" alt="Imagen de Florida" [src]="'assets/img/florida.jpg'" />
+            <img *ngSwitchCase="'Hualqui'" alt="Imagen de Hualqui" [src]="'assets/img/hualqui.jpg'" />
+            <img *ngSwitchCase="'Mulchén'" alt="Imagen de Mulchén" [src]="'assets/img/mulchen.jpg'" />
+            <img *ngSwitchCase="'Quilleco'" alt="Imagen de Quilleco" [src]="'assets/img/quilleco.jpg'" />
+            <img *ngSwitchCase="'Cabrero'" alt="Imagen de Cabrero" [src]="'assets/img/cabrero.jpg'" />
+            <img *ngSwitchCase="'Nacimiento'" alt="Imagen de Nacimiento" [src]="'assets/img/nacimiento.jpg'" />
+            <img *ngSwitchCase="'Antuco'" alt="Imagen de Antuco" [src]="'assets/img/antuco.jpg'" />
+            <img *ngSwitchCase="'San Rosendo'" alt="Imagen de San Rosendo" [src]="'assets/img/sanrosendo.jpg'" />
+            <img *ngSwitchCase="'Negrete'" alt="Imagen de Negrete" [src]="'assets/img/negrete.jpg'" />
+            <img *ngSwitchCase="'Curanilahue'" alt="Imagen de Curanilahue" [src]="'assets/img/curanilahue.jpg'" />
+          </div>
+          
           <ion-card-header>
-            <ion-card-title>Concepcion</ion-card-title>
-            <ion-card-subtitle>Centro de Concepcion</ion-card-subtitle>
+            <ion-card-title>{{ viaje.comuna }}</ion-card-title>
           </ion-card-header>
-        
+
           <ion-card-content>
-            Asientos disponibles: 2
+            Asientos disponibles: {{ viaje.asientosDisponibles }}
             <hr>
-            Precio: $1.200
+            Fecha: {{ viaje.fecha | date: 'dd MMMM yyyy' }} <!-- Formato de fecha -->
+            <hr>
+            Hora: {{ viaje.hora }}
+            <hr>
+            Precio: ${{ viaje.precio }}
           </ion-card-content>
-        
-          <ion-button href="/vista-detalle-viaje" expand="block" fill="clear">Ver viaje</ion-button>
+
+          <ion-button [routerLink]="['/vista-detalle-viaje', viaje.id]" expand="block" fill="clear">
+            Ver viaje
+          </ion-button>
         </ion-card>
       </ion-col>
-      <ion-col size="12" size-md="6" size-lg="4">
-        <ion-card>
-          <img alt="Silhouette of mountains" src="assets/img/centro_concepcion.png" />
-          <ion-card-header>
-            <ion-card-title>Concepcion</ion-card-title>
-            <ion-card-subtitle>Centro de Concepcion</ion-card-subtitle>
-          </ion-card-header>
-        
-          <ion-card-content>
-            Asientos disponibles: 1
-            <hr>
-            Precio: $800
-          </ion-card-content>
-        
-          <ion-button href="/vista-detalle-viaje" expand="block" fill="clear">Ver viaje</ion-button>
-        </ion-card>
-      </ion-col>     
     </ion-row>
   </ion-grid>
-  
 </ion-content>
-

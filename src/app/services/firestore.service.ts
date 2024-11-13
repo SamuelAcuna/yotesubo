@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+
 import { map, Observable } from 'rxjs';
+import { Car } from '../interfaces/cars';
+import { User } from '../interfaces/user';
+import { Viaje } from '../interfaces/viajes';
+
 
 @Injectable({
   providedIn: 'root'
@@ -39,4 +44,29 @@ export class FirestoreService {
   deleteDocument(collectionName: string, docId: string) {
     return this.firestore.collection(collectionName).doc(docId).delete();
   }
+
+  // Obtener autos por ID de usuario
+  getCarsByUserId(userId: string): Observable<Car[]> {
+    return this.firestore.collection<Car>('cars', ref => ref.where('userId', '==', userId))
+      .valueChanges();
+  }
+  getViajes(): Observable<Viaje[]> {
+    return this.firestore.collection('viajes').snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data() as Viaje;
+        const id = a.payload.doc.id;
+        return { id, ...data }; // Retorna los datos del viaje junto con el ID
+      }))
+    );
+  }
+  getViajeById(id: string): Observable<Viaje | null> {
+    return this.firestore.collection('viajes').doc<Viaje>(id).snapshotChanges().pipe(
+      map(action => {
+        const data = action.payload.data();
+        return data ? { id, ...data } : null; // Incluye el ID en el objeto si existe
+      })
+    );
+  }
+
+
 }

@@ -1,9 +1,11 @@
 export interface Car {
-    id: string;
-    brand: string;
-    model: string;
-    year: number;
+    id?: string;
+    userId: string;
+    marca: string;
+    modelo: string;
+    anio: number;
+    capacidad: number;
     color: string;
-    price: number;
-    image: string;
+    patente: string;
+    imagen: string;
 }
