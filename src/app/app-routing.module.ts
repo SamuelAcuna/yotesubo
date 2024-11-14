@@ -27,10 +27,7 @@ const routes: Routes = [
     path: 'vista-detalle-viaje/:id',
     loadChildren: () => import('./pages/vista-detalle-viaje/vista-detalle-viaje.module').then( m => m.VistaDetalleViajePageModule), canActivate: [AuthGuard]
   },
-  {
-    path: 'vista-estado-viaje',
-    loadChildren: () => import('./pages/vista-estado-viaje/vista-estado-viaje.module').then( m => m.VistaEstadoViajePageModule), canActivate: [AuthGuard]
-  },
+  
   {
     path: 'crearviaje',
     loadChildren: () => import('./pages/crearviaje/crearviaje.module').then( m => m.CrearviajePageModule), canActivate: [AuthGuard]
@@ -55,6 +52,16 @@ const routes: Routes = [
     path: 'registro-usuario',
     loadChildren: () => import('./pages/registro-usuario/registro-usuario.module').then( m => m.RegistroUsuarioPageModule)
   },
+  {
+    path: 'vistapasajero/:id',
+    loadChildren: () => import('./pages/vistapasajero/vistapasajero.module').then( m => m.VistapasajeroPageModule)
+  },
+  {
+    path: 'vistaconductor/:id',
+    loadChildren: () => import('./pages/vistaconductor/vistaconductor.module').then( m => m.VistaconductorPageModule)
+  },
+
+
 
 
 

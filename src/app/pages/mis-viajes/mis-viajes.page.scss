@@ -1,0 +1,28 @@
+.estado {
+    font-weight: bold;
+  }
+  
+  .estado-disponible {
+    color: green; /* Color para "Disponible" */
+  }
+  
+  .estado-en-proceso {
+    color: orange; /* Color para "En curso" */
+  }
+  
+  .estado-cancelado {
+    color: red; /* Color para "Cancelado" */
+  }
+  
+  .estado-completado {
+    color: blue; /* Color para "Completado" */
+  }
+  
+  .estado-pendiente {
+    color: darkgray; /* Color para "Pendiente" (puedes ajustar el tono) */
+  }
+  
+  .estado-default {
+    color: gray; /* Color por defecto */
+  }
+  

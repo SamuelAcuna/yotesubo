@@ -38,6 +38,7 @@
   <ion-grid>
     <ion-row>
       <ion-col *ngFor="let viaje of viajes" size="12" size-md="6" size-lg="4">
+        <div *ngIf="viaje.estado === 'Disponible'">
         <ion-card>
           <div [ngSwitch]="viaje.comuna">
             
@@ -80,6 +81,7 @@
             Ver viaje
           </ion-button>
         </ion-card>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

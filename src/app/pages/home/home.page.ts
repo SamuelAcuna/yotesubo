@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NavigationExtras, Route, Router } from '@angular/router';
 import { Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -14,7 +15,7 @@ export class HomePage {
   viajesComoPasajero: Viaje[] = [];
   usuarioActivoId: string = '';
 
-  constructor( private authService: AuthService, private firestoreService: FirestoreService) {}
+  constructor( private authService: AuthService, private firestoreService: FirestoreService, private router: Router) {}
   ngOnInit() {
     this.authService.getCurrentUserId().subscribe((userId) => {
       if (userId) {
@@ -24,8 +25,16 @@ export class HomePage {
     });
     
   }
-
-
+  ver(id: string) {
+    // Aquí pasamos el id a la otra página usando state
+    const navigationExtras: NavigationExtras = {
+      state: {
+        id: id
+      }
+    };
+    this.router.navigate(['vista-estado-viaje'], navigationExtras);
+  }
+  
 
 
   filter() {

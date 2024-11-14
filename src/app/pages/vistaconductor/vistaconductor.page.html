@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home"></ion-back-button>
+      
+    </ion-buttons>
+    <ion-title class="ion-text-capitalize ion-text-center" mode="md"> Detalle Viaje</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <img src="assets/img/centro_concepcion.png" alt="Imagen del viaje" class="viaje-imagen" />
+
+    <ion-card-header>
+      <ion-card-title>Datos del Viaje</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Destino:</ion-label>
+        <ion-note slot="end">{{viaje?.comuna}}</ion-note>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label>Fecha:</ion-label>
+        <ion-note slot="end">{{fechaFormateada}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Hora:</ion-label>
+        <ion-note slot="end">{{viaje?.hora}}</ion-note>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label>Asientos Disponibles:</ion-label>
+        <ion-note slot="end">{{viaje?.asientosDisponibles}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Precio:</ion-label>
+        <ion-note slot="end">{{viaje?.precio}}</ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Estado:</ion-label>
+        <ion-note slot="end">
+          <span class="estado aceptado">{{viaje?.estado}}</span>
+        </ion-note>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Anfitrion</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      
+        <ion-item>
+          <ion-avatar slot="start">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Ocupante 1" />
+          </ion-avatar>
+          <ion-label>{{conductor?.nombreCompleto}} </ion-label>
+          <ion-button fill="clear" (click)="openWhatsApp(conductor?.celular || '')">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" slot="end" (click)="openCallApp(conductor?.celular || '')">
+            <ion-icon name="call"></ion-icon>
+          </ion-button>
+        </ion-item>
+    
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Ocupantes</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let ocupante of viaje?.pasajeros">
+          <ion-avatar slot="start">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Avatar" />
+          </ion-avatar>
+          <ion-label>{{ocupante.nombreCompleto}}</ion-label>
+          <ion-button fill="clear" (click)="openWhatsApp(ocupante.celular)">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" slot="end" (click)="openCallApp(ocupante.celular)">
+            <ion-icon name="call"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="auto">
+        <ion-button (click)="cambiarEstado('En curso')" class="ion-align-self-center" shape="round">Iniciar Viaje</ion-button>
+      </ion-col>
+      <ion-col size="auto">
+        <ion-button (click)="cambiarEstado('Completado')" class="ion-align-self-center" shape="round">Finalizar Viaje</ion-button>
+      </ion-col>
+      <ion-col size="auto">
+        <ion-button (click)="cambiarEstado('Cancelado')" class="ion-align-self-center" shape="round">Cancelar Viaje</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+  
+  
+</ion-content>
+<ion-footer>
+  <ion-toolbar class="ion-text-center" color="success">
+    <ion-title>{{viaje?.estado}}</ion-title>
+  </ion-toolbar>
+</ion-footer>

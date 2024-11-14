@@ -62,7 +62,7 @@
               <p>Hora: {{ viaje.hora }}</p>
             </ion-label>
       
-            <ion-button [routerLink]="['/vista-detalle-viaje', viaje.id]" fill="clear" slot="end">
+            <ion-button [routerLink]="['/vistaconductor', viaje.id]" fill="clear" slot="end">
               Ver viaje
             </ion-button>
           </ion-item>
@@ -78,17 +78,17 @@
         
       <ion-list>
         <!-- Iterar sobre los viajes activos -->
-        <ion-item *ngFor="let viaje of viajesComoPasajero">
+        <ion-item *ngFor="let viajes of viajesComoPasajero">
           
     
           <ion-label>
-            <h2>{{ viaje.comuna }}</h2>
-            <p>Asientos disponibles: {{ viaje.asientosDisponibles }}</p>
-            <p>Fecha: {{ viaje.fecha }}</p>
-            <p>Hora: {{ viaje.hora }}</p>
+            <h2>{{ viajes.comuna }}</h2>
+            <p>Asientos disponibles: {{ viajes.asientosDisponibles }}</p>
+            <p>Fecha: {{ viajes.fecha }}</p>
+            <p>Hora: {{ viajes.hora }}</p>
           </ion-label>
     
-          <ion-button [routerLink]="['/vista-detalle-viaje', viaje.id]" fill="clear" slot="end">
+          <ion-button [routerLink]="['/vistapasajero', viajes.id]" expand="block" fill="clear">
             Ver viaje
           </ion-button>
         </ion-item>

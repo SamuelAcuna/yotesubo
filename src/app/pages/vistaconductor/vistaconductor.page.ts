@@ -2,18 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { User } from 'src/app/interfaces/user';
-import { Viaje } from 'src/app/interfaces/viajes';
+import { EstadoViaje, Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { EstadoViaje } from '../../interfaces/viajes';
-
 
 @Component({
-  selector: 'app-vista-detalle-viaje',
-  templateUrl: './vista-detalle-viaje.page.html',
-  styleUrls: ['./vista-detalle-viaje.page.scss'],
+  selector: 'app-vistaconductor',
+  templateUrl: './vistaconductor.page.html',
+  styleUrls: ['./vistaconductor.page.scss'],
 })
-export class VistaDetalleViajePage implements OnInit {
+export class VistaconductorPage implements OnInit {
   viaje: Viaje | null = null;
   fechaFormateada: string = '';
   user: User | null = null;
@@ -52,7 +50,24 @@ export class VistaDetalleViajePage implements OnInit {
       }
     });
   }
-
+  cambiarEstado(estado: string) {
+    
+    if (this.viaje && this.viaje.id) {
+      if(estado === 'En curso'){
+        this.viaje.estado = EstadoViaje.EnCurso;
+      }else if(estado === 'Cancelado'){
+        this.viaje.estado = EstadoViaje.Cancelado;
+        this.viaje.isActive = false;
+      }else if(estado === 'Completado'){
+        this.viaje.estado = EstadoViaje.Completado;
+        this.viaje.isActive = false;
+      }
+      this.firestoreService.updateDocument('viajes', this.viaje.id, { 
+        estado: this.viaje.estado,
+        isActive: this.viaje.isActive
+      })  
+    }
+  }
   //Consulta de datos
   loadUsers() {
     console.log('Buscando todos los usuarios...');
@@ -66,56 +81,6 @@ export class VistaDetalleViajePage implements OnInit {
       }
     });
   }
-
-
-  // Petición de viaje
-  pedirViaje() {
-    if (this.viaje && this.user) {
-      // Verificar si ya hay asientos disponibles
-      if (this.viaje.asientosDisponibles <= 0) {
-        console.log('No hay asientos disponibles para este viaje');
-        return;  // Salir si no hay asientos disponibles
-      }
-  
-      // Verificar si el usuario ya está en la lista de pasajeros
-      const pasajeroEncontrado = this.viaje.pasajeros.find(pasajero => pasajero.uid === this.user?.uid);
-  
-      if (pasajeroEncontrado) {
-        console.log('Ya estás en la lista de pasajeros');
-        return;  // Salir si el usuario ya está en la lista
-      }
-  
-      // Agregar al usuario actual a la lista de pasajeros
-      this.viaje.pasajeros.push({
-        uid: this.user.uid,
-        nombreCompleto: this.user.nombreCompleto,
-        celular: this.user.celular,
-        email: this.user.email  // Incluye otros campos de User si es necesario
-      });
-  
-      // Disminuir la cantidad de asientos disponibles
-      this.viaje.asientosDisponibles--;
-  
-      // Actualizar el documento de viaje con la nueva lista de pasajeros y la cantidad de asientos disponibles
-      if (this.viaje && this.viaje.id) {
-        if (this.viaje.asientosDisponibles === 0) {
-          this.viaje.estado = EstadoViaje.Pendiente;
-        }
-        this.firestoreService.updateDocument('viajes', this.viaje.id, { 
-          pasajeros: this.viaje.pasajeros,
-          asientosDisponibles: this.viaje.asientosDisponibles,
-          estado: this.viaje.estado
-        })
-        .then(() => {
-          console.log('Viaje actualizado con nuevo pasajero');
-        })
-        .catch((error) => console.error('Error al actualizar el viaje:', error));
-      } else {
-        console.error('El ID del viaje no está definido');
-      }
-    }
-  }
-  
   loadViaje(id: string) {
     this.firestoreService.getViajeById(id).subscribe((data) => {
       this.viaje = data;
@@ -134,7 +99,7 @@ export class VistaDetalleViajePage implements OnInit {
   }
   
 
-  // Servicios extras
+  //Servicios extras
   openWhatsApp(phonenumber: string) {
     const url = `https://wa.me/${phonenumber}`;
     const browser = this.iab.create(url, '_system');

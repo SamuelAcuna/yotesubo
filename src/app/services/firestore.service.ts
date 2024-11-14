@@ -85,7 +85,12 @@ export class FirestoreService {
   getViajesComoPasajero(usuarioId: string): Observable<any[]> {
     return this.getViajes().pipe(
       map(viajes => 
-        viajes.filter(viaje => viaje.pasajeros.some(pasajero => pasajero.uid === usuarioId)) // Filtra los viajes
+        viajes
+          .filter(viaje => viaje.pasajeros.some(pasajero => pasajero.uid === usuarioId)) // Filtra los viajes
+          .map(viaje => ({
+            ...viaje,
+            id: viaje.id // Asegúrate de que 'viaje.id' existe en tus datos
+          }))
       )
     );
   }
@@ -94,7 +99,16 @@ export class FirestoreService {
   getViajesComoConductor(usuarioId: string): Observable<any[]> {
     return this.firestore
       .collection('viajes', ref => ref.where('userId', '==', usuarioId))
-      .valueChanges();
+      .snapshotChanges() // Usa snapshotChanges() en lugar de valueChanges() para acceder al id del documento
+      .pipe(
+        map(actions => 
+          actions.map(a => {
+            const data = a.payload.doc.data() as Viaje;
+            const id = a.payload.doc.id;
+            return { id, ...data }; // Retorna los datos del viaje junto con su id
+          })
+        )
+      );
   }
 
 
