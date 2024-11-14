@@ -24,15 +24,84 @@ export class HomePage {
         this.loadViajes();
       }
     });
+    this.loadViajesFromLocalStorage();
   }
 
-  ver(id: string) {
-    const navigationExtras: NavigationExtras = {
-      state: {
-        id: id
+  // Método para verificar la conexión
+  isOnline(): boolean {
+    return navigator.onLine; // Verifica si hay conexión a Internet
+  }
+
+  loadViajes() {
+    // Verificar si hay conexión
+    if (this.isOnline()) {
+      // Si hay conexión, hacer la consulta a Firebase
+      this.loadViajesFromApi();
+    }
+  }
+
+  // Cargar viajes desde la API (Firebase)
+  loadViajesFromApi() {
+    this.firestoreService.getViajesComoConductor(this.usuarioActivoId).subscribe(
+      (viajesConductor) => {
+        this.viajesComoConductor = viajesConductor;
+        this.filter();
+        console.log('Viajes como conductor:', this.viajesComoConductor);
+
+        // Guardar en localStorage
+        localStorage.setItem('viajesComoConductor', JSON.stringify(this.viajesComoConductor));
+      },
+      (error) => {
+        console.error('Error al cargar viajes desde Firebase:', error);
+        // Si hay un error, intentar cargar desde localStorage
+        this.loadViajesFromLocalStorage();
       }
-    };
-    this.router.navigate(['vista-estado-viaje'], navigationExtras);
+    );
+
+    this.firestoreService.getViajesComoPasajero(this.usuarioActivoId).subscribe(
+      (viajesPasajero) => {
+        this.viajesComoPasajero = viajesPasajero;
+        this.filter();
+        console.log('Viajes como pasajero:', this.viajesComoPasajero);
+
+        // Guardar en localStorage
+        localStorage.setItem('viajesComoPasajero', JSON.stringify(this.viajesComoPasajero));
+      },
+      (error) => {
+        console.error('Error al cargar viajes desde Firebase:', error);
+        // Si hay un error, intentar cargar desde localStorage
+        this.loadViajesFromLocalStorage();
+      }
+    );
+  }
+
+  // Cargar viajes desde localStorage
+  loadViajesFromLocalStorage() {
+    const storedViajesConductor = localStorage.getItem('viajesComoConductor');
+    if (storedViajesConductor) {
+      try {
+        this.viajesComoConductor = JSON.parse(storedViajesConductor);
+        console.log('Viajes como conductor cargados desde localStorage:', this.viajesComoConductor);
+      } catch (e) {
+        console.error('Error al parsear los viajes de conductor desde localStorage', e);
+        this.viajesComoConductor = [];
+      }
+    } else {
+      console.log('No se encontraron viajes en localStorage.');
+    }
+
+    const storedViajesPasajero = localStorage.getItem('viajesComoPasajero');
+    if (storedViajesPasajero) {
+      try {
+        this.viajesComoPasajero = JSON.parse(storedViajesPasajero);
+        console.log('Viajes como pasajero cargados desde localStorage:', this.viajesComoPasajero);
+      } catch (e) {
+        console.error('Error al parsear los viajes de pasajero desde localStorage', e);
+        this.viajesComoPasajero = [];
+      }
+    } else {
+      console.log('No se encontraron viajes en localStorage.');
+    }
   }
 
   filter() {
@@ -40,41 +109,11 @@ export class HomePage {
     this.viajesComoPasajero = this.viajesComoPasajero.filter(viaje => viaje.isActive);
   }
 
-  loadViajes() {
-    // Intentar obtener los viajes desde Firebase
-    this.firestoreService.getViajesComoConductor(this.usuarioActivoId).subscribe((viajesConductor) => {
-      this.viajesComoConductor = viajesConductor;
-      this.filter();
-      console.log('Viajes como conductor:', this.viajesComoConductor);
-
-      // Guardar en localStorage
-      localStorage.setItem('viajesComoConductor', JSON.stringify(this.viajesComoConductor));
-    }, (error) => {
-      // Si falla, cargar desde localStorage
-      const storedViajesConductor = localStorage.getItem('viajesComoConductor');
-      if (storedViajesConductor) {
-        this.viajesComoConductor = JSON.parse(storedViajesConductor);
-        console.log('Viajes como conductor cargados desde localStorage:', this.viajesComoConductor);
-      }
-    });
-
-    this.firestoreService.getViajesComoPasajero(this.usuarioActivoId).subscribe((viajesPasajero) => {
-      this.viajesComoPasajero = viajesPasajero;
-      this.filter();
-      console.log('Viajes como pasajero:', this.viajesComoPasajero);
-
-      // Guardar en localStorage
-      localStorage.setItem('viajesComoPasajero', JSON.stringify(this.viajesComoPasajero));
-    }, (error) => {
-      // Si falla, cargar desde localStorage
-      const storedViajesPasajero = localStorage.getItem('viajesComoPasajero');
-      if (storedViajesPasajero) {
-        this.viajesComoPasajero = JSON.parse(storedViajesPasajero);
-        console.log('Viajes como pasajero cargados desde localStorage:', this.viajesComoPasajero);
-      }
-    });
-
-    console.log('usuario activo:', this.usuarioActivoId);
+  ver(id: string) {
+    const navigationExtras: NavigationExtras = {
+      state: { id: id },
+    };
+    this.router.navigate(['vista-estado-viaje'], navigationExtras);
   }
 
   onLogout() {

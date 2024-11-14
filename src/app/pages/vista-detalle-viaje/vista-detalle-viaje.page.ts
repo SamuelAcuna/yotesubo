@@ -6,7 +6,7 @@ import { Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { EstadoViaje } from '../../interfaces/viajes';
-import { ToastController } from '@ionic/angular';
+import { ToastController, NavController } from '@ionic/angular';
 import { EmailService } from 'src/app/services/email.service';
 
 
@@ -27,7 +27,8 @@ export class VistaDetalleViajePage implements OnInit {
               private route: ActivatedRoute,
               private authService: AuthService,
               private toastController: ToastController,
-              private emailService: EmailService) { }
+              private emailService: EmailService,
+              private navController: NavController) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -116,6 +117,7 @@ export class VistaDetalleViajePage implements OnInit {
           console.log('Viaje actualizado con nuevo pasajero');
           this.showToast('Viaje solicitado con éxito');
           this.emailService.sendEmail(this.user?.nombreCompleto || '', this.conductor?.email || '',this.conductor?.nombreCompleto || '','He reservado una plaza en tu viaje');
+          this.navController.navigateBack('/home');
         })
         .catch((error) => console.error('Error al actualizar el viaje:', error));
       } else {

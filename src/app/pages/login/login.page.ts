@@ -25,7 +25,7 @@ export class LoginPage implements OnInit {
     if (savedEmail && savedPassword) {
       this.email = savedEmail;
       this.password = savedPassword;
-      this.autoLogin();
+      //this.autoLogin();
     }
   }
 
@@ -41,6 +41,10 @@ export class LoginPage implements OnInit {
       })
       .catch((error) => {
         this.showToast(`Error al iniciar sesión: ${error.message}`);
+        if(this.email == localStorage.getItem('lastUserEmail') || this.password == localStorage.getItem('lastUserPassword')) {
+          this.showToast('Por favor, introduce tu correo y contraseña');
+          this.navCtrl.navigateForward('/home');
+        }
       });
   }
 

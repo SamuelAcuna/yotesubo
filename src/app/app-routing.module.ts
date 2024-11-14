@@ -5,7 +5,7 @@ import { AuthGuard } from './guards/auth.guard';
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule) },
-  { path: 'home', loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule), canActivate: [AuthGuard] },
+  { path: 'home', loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule) },
   {
     path: 'restablecerpass',
     loadChildren: () => import('./pages/restablecerpass/restablecerpass.module').then( m => m.RestablecerpassPageModule)
@@ -59,7 +59,8 @@ const routes: Routes = [
   {
     path: 'vistaconductor/:id',
     loadChildren: () => import('./pages/vistaconductor/vistaconductor.module').then( m => m.VistaconductorPageModule)
-  },  {
+  },
+  {
     path: 'email',
     loadChildren: () => import('./pages/email/email.module').then( m => m.EmailPageModule)
   },
