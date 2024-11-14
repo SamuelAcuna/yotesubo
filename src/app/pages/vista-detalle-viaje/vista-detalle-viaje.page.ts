@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { EstadoViaje } from '../../interfaces/viajes';
 import { ToastController } from '@ionic/angular';
+import { EmailService } from 'src/app/services/email.service';
 
 
 @Component({
@@ -25,7 +26,8 @@ export class VistaDetalleViajePage implements OnInit {
               private firestoreService: FirestoreService,
               private route: ActivatedRoute,
               private authService: AuthService,
-              private toastController: ToastController) { }
+              private toastController: ToastController,
+              private emailService: EmailService) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -113,6 +115,7 @@ export class VistaDetalleViajePage implements OnInit {
         .then(() => {
           console.log('Viaje actualizado con nuevo pasajero');
           this.showToast('Viaje solicitado con éxito');
+          this.emailService.sendEmail(this.user?.nombreCompleto || '', this.conductor?.email || '',this.conductor?.nombreCompleto || '','He reservado una plaza en tu viaje');
         })
         .catch((error) => console.error('Error al actualizar el viaje:', error));
       } else {
@@ -120,7 +123,9 @@ export class VistaDetalleViajePage implements OnInit {
       }
     }
   }
-  
+  email(){
+    this.emailService.sendEmail(this.user?.nombreCompleto || '', this.conductor?.email || '',this.conductor?.nombreCompleto || '','He reservado una plaza en tu viaje');
+  }
   loadViaje(id: string) {
     this.firestoreService.getViajeById(id).subscribe((data) => {
       this.viaje = data;

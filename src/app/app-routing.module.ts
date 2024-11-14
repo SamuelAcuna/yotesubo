@@ -59,7 +59,11 @@ const routes: Routes = [
   {
     path: 'vistaconductor/:id',
     loadChildren: () => import('./pages/vistaconductor/vistaconductor.module').then( m => m.VistaconductorPageModule)
+  },  {
+    path: 'email',
+    loadChildren: () => import('./pages/email/email.module').then( m => m.EmailPageModule)
   },
+
 
 
 
