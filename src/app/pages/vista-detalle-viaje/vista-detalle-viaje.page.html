@@ -59,11 +59,11 @@
           <ion-avatar slot="start">
             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Ocupante 1" />
           </ion-avatar>
-          <ion-label>Luis Ilufin </ion-label>
-          <ion-button fill="clear" (click)="openWhatsApp()">
+          <ion-label>{{conductor?.nombreCompleto}} </ion-label>
+          <ion-button fill="clear" (click)="openWhatsApp(conductor?.celular || '')">
             <ion-icon name="logo-whatsapp"></ion-icon>
           </ion-button>
-          <ion-button fill="clear" slot="end" (click)="openCallApp()">
+          <ion-button fill="clear" slot="end" (click)="openCallApp(conductor?.celular || '')">
             <ion-icon name="call"></ion-icon>
           </ion-button>
         </ion-item>
@@ -77,30 +77,22 @@
 
     <ion-card-content>
       <ion-list>
-        <ion-item>
+        <ion-item *ngFor="let ocupante of viaje?.pasajeros">
           <ion-avatar slot="start">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Ocupante 1" />
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Avatar" />
           </ion-avatar>
-          <ion-label>Juan Mora </ion-label>
-        </ion-item>
-        
-        <ion-item>
-          <ion-avatar slot="start">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Ocupante 2" />
-          </ion-avatar>
-          <ion-label>Jose Luis Perez</ion-label>
-        </ion-item>
-
-        <ion-item>
-          <ion-avatar slot="start">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Ocupante 3" />
-          </ion-avatar>
-          <ion-label>Jose Vasquez</ion-label>
+          <ion-label>{{ocupante.nombreCompleto}}</ion-label>
+          <ion-button fill="clear" (click)="openWhatsApp(ocupante.celular)">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" slot="end" (click)="openCallApp(ocupante.celular)">
+            <ion-icon name="call"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
-  <ion-button expand="full" color="primary" class="ion-margin-top" href="/vista-estado-viaje">
+  <ion-button expand="full" color="primary" class="ion-margin-top" (click)="pedirViaje()">
     Pedir Viaje
   </ion-button>
   

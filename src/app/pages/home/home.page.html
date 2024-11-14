@@ -42,5 +42,61 @@
         Soy Pasajero
       </ion-button>
     </div>
+    <hr>
+    <hr>
+    <hr>
+    <ion-card *ngIf="viajesComoConductor.length > 0">
+      <ion-card-header>
+        <ion-card-title>Viajes como conductor</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <!-- Iterar sobre los viajes activos -->
+          <ion-item *ngFor="let viaje of viajesComoConductor">
+            
+      
+            <ion-label>
+              <h2>{{ viaje.comuna }}</h2>
+              <p>Asientos disponibles: {{ viaje.asientosDisponibles }}</p>
+              <p>Fecha: {{ viaje.fecha }}</p>
+              <p>Hora: {{ viaje.hora }}</p>
+            </ion-label>
+      
+            <ion-button [routerLink]="['/vista-detalle-viaje', viaje.id]" fill="clear" slot="end">
+              Ver viaje
+            </ion-button>
+          </ion-item>
+          
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngIf="viajesComoPasajero.length > 0">
+      <ion-card-header>
+        <ion-card-title>Viajes como pasajero</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        
+      <ion-list>
+        <!-- Iterar sobre los viajes activos -->
+        <ion-item *ngFor="let viaje of viajesComoPasajero">
+          
+    
+          <ion-label>
+            <h2>{{ viaje.comuna }}</h2>
+            <p>Asientos disponibles: {{ viaje.asientosDisponibles }}</p>
+            <p>Fecha: {{ viaje.fecha }}</p>
+            <p>Hora: {{ viaje.hora }}</p>
+          </ion-label>
+    
+          <ion-button [routerLink]="['/vista-detalle-viaje', viaje.id]" fill="clear" slot="end">
+            Ver viaje
+          </ion-button>
+        </ion-item>
+        
+      </ion-list>
+      
+      </ion-card-content>
+    </ion-card>
   </ion-content>
+  
 </div>

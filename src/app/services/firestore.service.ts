@@ -68,5 +68,34 @@ export class FirestoreService {
     );
   }
 
+  getUserByUid(uid: string): Observable<User[]> {
+    return this.firestore
+      .collection<User>('users', ref => ref.where('uid', '==', uid)) // Asegúrate de que 'users' sea el nombre de la colección
+      .valueChanges();
+  }
+
+  agregarPasajero(viajeId: string, pasajero: any): Promise<any> {
+    const pasajerosCollection = this.firestore.collection('viajes').doc(viajeId).collection('pasajeros');
+    return pasajerosCollection.add(pasajero);  // Regresa un Promise<any>, que es lo adecuado para compatibilidad
+  }
+  getAllUsers(): Observable<User[]> {
+    return this.firestore.collection<User>('user').valueChanges();
+  }
+  // Método para obtener los viajes de un usuario como pasajero
+  getViajesComoPasajero(usuarioId: string): Observable<any[]> {
+    return this.getViajes().pipe(
+      map(viajes => 
+        viajes.filter(viaje => viaje.pasajeros.some(pasajero => pasajero.uid === usuarioId)) // Filtra los viajes
+      )
+    );
+  }
+
+  // Método para obtener los viajes de un usuario como conductor
+  getViajesComoConductor(usuarioId: string): Observable<any[]> {
+    return this.firestore
+      .collection('viajes', ref => ref.where('userId', '==', usuarioId))
+      .valueChanges();
+  }
+
 
 }

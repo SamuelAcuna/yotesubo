@@ -12,7 +12,7 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>
-        <h2 class="ion-text-center">Jose Ignacio Paillan</h2>
+        <h2 class="ion-text-center">{{user?.nombreCompleto}}</h2>
         <div class="image-container">
           <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Perfil" />
         </div>
@@ -21,24 +21,30 @@
     </ion-card-header>
 
     <ion-card-content>
-      <h3>Autos:</h3>
-      <ion-list>
+      <ion-item>
+        <ion-label>Celular</ion-label>
+        <ion-label slot="end">{{user?.celular }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Email</ion-label>
+        <ion-label slot="end">{{user?.email}}</ion-label>
+      </ion-item>
+      <hr>
+      <hr>
+      <h1 style="text-align: center;">Mis autos</h1>
+      <ion-list *ngFor="let car of cars">
         <ion-item>
-          <ion-label>KKCK69</ion-label>
+          <ion-label>--</ion-label>
+          <ion-label slot="end">{{car.patente}}</ion-label>
         </ion-item>
-        <ion-item>
-          <ion-label>ABC123</ion-label>
-        </ion-item>
-        <ion-item href="crear-autp">
-          <ion-icon name="add" slot="start"></ion-icon>
-          <ion-label>Añadir Auto</ion-label>
-        </ion-item>
+        
+        
       </ion-list>
-
-      <div class="contact-icons">
-        <ion-icon name="logo-whatsapp" size="large" slot="start" class="icon"></ion-icon>
-        <ion-icon name="call" size="large" slot="start" class="icon"></ion-icon>
-      </div>
+      <ion-item href="crear-autp">
+        <ion-icon name="add" slot="start"></ion-icon>
+        <ion-label>Añadir Auto</ion-label>
+      </ion-item>
+      
     </ion-card-content>
   </ion-card>
 </ion-content>
