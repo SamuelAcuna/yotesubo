@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { NavController, ToastController } from '@ionic/angular';
 import { User } from 'src/app/interfaces/user';
 import { EstadoViaje, Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
@@ -19,9 +20,11 @@ export class VistaconductorPage implements OnInit {
   conductor: User | null = null;
 
   constructor(private iab: InAppBrowser,
+              private navCtrl: NavController,
               private firestoreService: FirestoreService,
               private route: ActivatedRoute,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private toastController: ToastController) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -31,96 +34,132 @@ export class VistaconductorPage implements OnInit {
     this.authService.getCurrentUserId().subscribe((userID) => {
       if (userID) {
         this.userID = userID;
-        console.log('User ID:', this.userID); // Verifica el userID aquí
-        this.loadUsers(); // Llamar al método para cargar todos los usuarios
+        console.log('User ID:', this.userID);
+        this.loadUsers();
       } else {
         console.log('No se encontró un usuario autenticado');
       }
     });
-    
   }
+
+  // Método para cargar el viaje y, si no hay datos en Firebase, usar los de localStorage
+  loadViaje(id: string) {
+    this.firestoreService.getViajeById(id).subscribe((data) => {
+      if (data) {
+        this.viaje = data;
+        this.saveToLocalStorage('viaje', this.viaje); // Guardar los datos de Firebase en localStorage
+        if (this.viaje.userId) {
+          this.loadConductor(this.viaje.userId);
+        } else {
+          console.log('No se encontró el ID del conductor');
+        }
+        if (this.viaje.fecha) {
+          this.fechaFormateada = this.convertirFechaFormatoPersonalizado(this.viaje.fecha);
+        }
+      } else {
+        console.log('No se encontró el viaje en Firebase, cargando desde localStorage');
+        const storedViaje = this.loadFromLocalStorage<Viaje>('viaje');
+        if (storedViaje) {
+          this.viaje = storedViaje;
+          console.log('Viaje cargado desde localStorage:', this.viaje);
+          this.fechaFormateada = this.convertirFechaFormatoPersonalizado(this.viaje.fecha);
+        }
+      }
+    });
+  }
+
+  // Método para cargar los datos del conductor
   loadConductor(userId: string) {
     this.firestoreService.getAllUsers().subscribe((usersData) => {
-      const foundUser = usersData.find(user => user.uid === userId); // Usa el parámetro userId
+      const foundUser = usersData.find(user => user.uid === userId);
       if (foundUser) {
-        this.conductor = foundUser; // Asigna el usuario encontrado
+        this.conductor = foundUser;
+        this.saveToLocalStorage('conductor', this.conductor); // Guardar el conductor en localStorage
         console.log('Conductor encontrado:', this.conductor);
       } else {
         console.log('No se encontró el usuario con el UID proporcionado');
       }
     });
   }
-  cambiarEstado(estado: string) {
-    
-    if (this.viaje && this.viaje.id) {
-      if(estado === 'En curso'){
-        this.viaje.estado = EstadoViaje.EnCurso;
-      }else if(estado === 'Cancelado'){
-        this.viaje.estado = EstadoViaje.Cancelado;
-        this.viaje.isActive = false;
-      }else if(estado === 'Completado'){
-        this.viaje.estado = EstadoViaje.Completado;
-        this.viaje.isActive = false;
-      }
-      this.firestoreService.updateDocument('viajes', this.viaje.id, { 
-        estado: this.viaje.estado,
-        isActive: this.viaje.isActive
-      })  
-    }
-  }
-  //Consulta de datos
+
+  // Método para cargar todos los usuarios
   loadUsers() {
     console.log('Buscando todos los usuarios...');
     this.firestoreService.getAllUsers().subscribe((usersData) => {
-      const foundUser = usersData.find(user => user.uid === this.userID); // Busca el usuario por UID
+      const foundUser = usersData.find(user => user.uid === this.userID);
       if (foundUser) {
-        this.user = foundUser; // Asigna el usuario encontrado
+        this.user = foundUser;
+        this.saveToLocalStorage('user', this.user); // Guardar el usuario en localStorage
         console.log('Usuario personalizado encontrado:', this.user);
       } else {
         console.log('No se encontró el usuario con el UID proporcionado');
       }
     });
   }
-  loadViaje(id: string) {
-    this.firestoreService.getViajeById(id).subscribe((data) => {
-      this.viaje = data;
-      console.log('Viaje:', this.viaje);
-      console.log(this.viaje?.userId);
-      if (this.viaje?.userId) {
-        this.loadConductor(this.viaje.userId);
-      }else{
-        console.log('No se encontró el ID del conductor')
-      }
-      if (this.viaje?.fecha) {
-        this.fechaFormateada = this.convertirFechaFormatoPersonalizado(this.viaje.fecha);
-      }
-    });
-    
-  }
-  
 
-  //Servicios extras
+  // Guardar en localStorage
+  saveToLocalStorage(key: string, data: any) {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  // Cargar desde localStorage
+  loadFromLocalStorage<T>(key: string): T | null {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) as T : null;
+  }
+
+  // Cambiar estado del viaje
+  cambiarEstado(estado: string) {
+    if (this.viaje && this.viaje.id) {
+      if(estado === 'En curso'){
+        this.viaje.estado = EstadoViaje.EnCurso;
+        this.showToast('Viaje Iniciado');
+      }else if(estado === 'Cancelado'){
+        this.viaje.estado = EstadoViaje.Cancelado;
+        this.viaje.isActive = false;
+        this.showToast('Viaje cancelado');
+        this.navCtrl.navigateBack('/home'); 
+      }else if(estado === 'Completado'){
+        this.viaje.estado = EstadoViaje.Completado;
+        this.viaje.isActive = false;
+        this.showToast('Viaje completado');
+        this.navCtrl.navigateBack('/home');
+      }
+      this.firestoreService.updateDocument('viajes', this.viaje.id, { 
+        estado: this.viaje.estado,
+        isActive: this.viaje.isActive
+      });
+      this.saveToLocalStorage('viaje', this.viaje); // Actualizar en localStorage
+    }
+  }
+
+  // Servicios extras
   openWhatsApp(phonenumber: string) {
     const url = `https://wa.me/${phonenumber}`;
-    const browser = this.iab.create(url, '_system');
+    this.iab.create(url, '_system');
   }
-  
+
   openCallApp(phonenumber: string) {
     window.open(`tel:${phonenumber}`, '_system');
   }
+
+  // Convertir fecha a formato personalizado
   convertirFechaFormatoPersonalizado(fechaString: string): string {
-    // Crear un objeto Date a partir del string ISO
     const fecha = new Date(fechaString);
-  
-    // Opciones para formatear la fecha
     const opciones: Intl.DateTimeFormatOptions = {
-      weekday: 'long',   // Nombre del día de la semana (ej. Lunes)
-      day: 'numeric',    // Día del mes (ej. 15)
-      month: 'long',     // Nombre del mes (ej. noviembre)
-      year: 'numeric'    // Año (ej. 2024)
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
     };
-  
-    // Convertir la fecha a formato deseado
     return fecha.toLocaleDateString('es-ES', opciones);
+  }
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }

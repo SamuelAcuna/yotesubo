@@ -6,6 +6,7 @@ import { Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { EstadoViaje } from '../../interfaces/viajes';
+import { ToastController } from '@ionic/angular';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class VistaDetalleViajePage implements OnInit {
   constructor(private iab: InAppBrowser,
               private firestoreService: FirestoreService,
               private route: ActivatedRoute,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private toastController: ToastController) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -74,6 +76,7 @@ export class VistaDetalleViajePage implements OnInit {
       // Verificar si ya hay asientos disponibles
       if (this.viaje.asientosDisponibles <= 0) {
         console.log('No hay asientos disponibles para este viaje');
+        this.showToast('No hay asientos disponibles para este viaje');
         return;  // Salir si no hay asientos disponibles
       }
   
@@ -82,6 +85,7 @@ export class VistaDetalleViajePage implements OnInit {
   
       if (pasajeroEncontrado) {
         console.log('Ya estás en la lista de pasajeros');
+        this.showToast('Ya estás en la lista de pasajeros');
         return;  // Salir si el usuario ya está en la lista
       }
   
@@ -108,6 +112,7 @@ export class VistaDetalleViajePage implements OnInit {
         })
         .then(() => {
           console.log('Viaje actualizado con nuevo pasajero');
+          this.showToast('Viaje solicitado con éxito');
         })
         .catch((error) => console.error('Error al actualizar el viaje:', error));
       } else {
@@ -138,10 +143,12 @@ export class VistaDetalleViajePage implements OnInit {
   openWhatsApp(phonenumber: string) {
     const url = `https://wa.me/${phonenumber}`;
     const browser = this.iab.create(url, '_system');
+    this.showToast('Abriendo WhatsApp...');
   }
   
   openCallApp(phonenumber: string) {
     window.open(`tel:${phonenumber}`, '_system');
+    this.showToast('Abriendo la aplicación de teléfono...');
   }
   convertirFechaFormatoPersonalizado(fechaString: string): string {
     // Crear un objeto Date a partir del string ISO
@@ -157,5 +164,13 @@ export class VistaDetalleViajePage implements OnInit {
   
     // Convertir la fecha a formato deseado
     return fecha.toLocaleDateString('es-ES', opciones);
+  }
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from '@ionic/angular';
-
+import { NavController, AlertController, ToastController } from '@ionic/angular';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 @Component({
   selector: 'app-restablecerpass',
   templateUrl: './restablecerpass.page.html',
@@ -9,19 +9,29 @@ import { NavController, AlertController } from '@ionic/angular';
 export class RestablecerpassPage {
   email: string = '';
 
-  constructor(private navCtrl: NavController, private alertController: AlertController) {}
+  constructor(private afAuth: AngularFireAuth,
+              private navCtrl: NavController, 
+              private alertController: AlertController, 
+              private toastController: ToastController) {}
 
   async onSendCode() {
     if (this.email) {
       // Crea la alerta
       const alert = await this.alertController.create({
-        header: 'Código Enviado',
-        message: `Se ha enviado un código a ${this.email}`,
+        header: 'Enlace Enviado',
+        message: `Se ha enviado un enlace de recuperacion a ${this.email}`,
         buttons: [{
           text: 'OK',
           handler: () => {
             // Redirige a la página de ingreso de código
-            this.navCtrl.navigateForward('/ingreso-codigo');
+            this.afAuth.sendPasswordResetEmail(this.email)
+              .then(() => {
+                this.showToast('Se ha enviado un enlace para restablecer tu contraseña');
+                this.navCtrl.navigateBack('/login');
+              })
+              .catch((error) => {
+                this.showToast(`Error al enviar el enlace de recuperación: ${error.message}`);
+              });
           }
         }]
       });
@@ -35,5 +45,13 @@ export class RestablecerpassPage {
       });
       await alert.present();
     }
+  }
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }

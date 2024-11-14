@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Car } from 'src/app/interfaces/cars';
 import { FirestoreService } from 'src/app/services/firestore.service';
-
+import { ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 
@@ -20,7 +20,8 @@ export class CrearAutpPage implements OnInit {
     private fb: FormBuilder, 
     private firestoreService: FirestoreService, 
     private authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private toastController: ToastController) {
       this.carForm = this.fb.group({
         userId: ['', Validators.required],
         marca: ['', Validators.required],
@@ -47,15 +48,19 @@ export class CrearAutpPage implements OnInit {
       this.firestoreService.addDocument('cars', carData)
         .then(() => {
           console.log('Car saved successfully!');
+
+          this.showToast('Auto guardado correctamente');  
           this.carForm.reset(); // Resetea el formulario tras guardar
           this.router.navigate(['/home']); // Redirige al usuario a la página de inicio
         })
         .catch((error) => {
           console.error('Error saving car:', error);
+          this.showToast('Hubo un error al guardar el auto');
         });
       } else {
         console.log('Car data:', this.carForm.value);
         console.log('Formulario inválido');
+        this.showToast('Por favor completa el formulario');
       }
   }
 
@@ -79,5 +84,13 @@ export class CrearAutpPage implements OnInit {
     if (currentValue > 1) { // Límite mínimo
       this.carForm.get('capacidad')?.setValue(currentValue - 1);
     }
+  }
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }

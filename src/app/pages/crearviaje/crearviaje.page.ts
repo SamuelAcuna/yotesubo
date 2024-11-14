@@ -5,7 +5,7 @@ import { EstadoViaje, Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { Router } from '@angular/router';
-
+import { ToastController } from '@ionic/angular';
 @Component({
   selector: 'app-crearviaje',
   templateUrl: './crearviaje.page.html',
@@ -27,7 +27,8 @@ export class CrearviajePage implements OnInit {
   constructor(
     private authService: AuthService,
     private firestoreService: FirestoreService,
-    private router: Router) {
+    private router: Router,
+    private toastController: ToastController) {
     const now = new Date();
     // Formato: YYYY-MM-DDTHH:mm
     this.today = now.toISOString();
@@ -56,7 +57,8 @@ export class CrearviajePage implements OnInit {
       this.firestoreService.addDocument('viajes', nuevoViaje)
       .then(() => {
         console.log('Viaje creado exitosamente');
-        this.router.navigate(['/detalleviaje-conductor']);
+        this.showToast('Viaje creado exitosamente');
+        this.router.navigate(['/detalleviaje-conductor'], { state: { viaje: nuevoViaje } });
         // Aquí podrías redirigir al usuario o mostrar un mensaje de éxito
       })
       .catch((error) => {
@@ -109,5 +111,12 @@ export class CrearviajePage implements OnInit {
     }
   }
   
-
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
+  }
 }
