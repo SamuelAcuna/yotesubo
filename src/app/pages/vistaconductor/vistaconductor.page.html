@@ -98,13 +98,31 @@
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size="auto">
-        <ion-button (click)="cambiarEstado('En curso')" class="ion-align-self-center" shape="round">Iniciar Viaje</ion-button>
+        <ion-button 
+          [disabled]="viaje?.estado === 'En curso' || viaje?.estado === 'Completado'" 
+          (click)="cambiarEstado('En curso')" 
+          class="ion-align-self-center" 
+          shape="round">
+          Iniciar Viaje
+        </ion-button>
       </ion-col>
       <ion-col size="auto">
-        <ion-button (click)="cambiarEstado('Completado')" class="ion-align-self-center" shape="round">Finalizar Viaje</ion-button>
+        <ion-button 
+          [disabled]="viaje?.estado !== 'En curso'" 
+          (click)="cambiarEstado('Completado')" 
+          class="ion-align-self-center" 
+          shape="round">
+          Finalizar Viaje
+        </ion-button>
       </ion-col>
       <ion-col size="auto">
-        <ion-button (click)="cambiarEstado('Cancelado')" class="ion-align-self-center" shape="round">Cancelar Viaje</ion-button>
+        <ion-button 
+          [disabled]="viaje?.estado === 'Completado'" 
+          (click)="cambiarEstado('Cancelado')" 
+          class="ion-align-self-center" 
+          shape="round">
+          Cancelar Viaje
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

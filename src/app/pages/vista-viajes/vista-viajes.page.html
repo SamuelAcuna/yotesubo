@@ -12,25 +12,7 @@
   <ion-item>
     <ion-select [(ngModel)]="comunaSeleccionada" interface="popover" slot="start" placeholder="Selecciona una comuna" (ionChange)="filtrarPorComuna()">
       <ion-select-option value="">Todas</ion-select-option>
-      <ion-select-option value="Concepción">Concepción</ion-select-option>
-            <ion-select-option value="Talcahuano">Talcahuano</ion-select-option>
-            <ion-select-option value="San Pedro de la Paz">San Pedro de la Paz</ion-select-option>
-            <ion-select-option value="Chiguayante">Chiguayante</ion-select-option>
-            <ion-select-option value="Hualpén">Hualpén</ion-select-option>
-            <ion-select-option value="Penco">Penco</ion-select-option>
-            <ion-select-option value="Lota">Lota</ion-select-option>
-            <ion-select-option value="Tomé">Tomé</ion-select-option>
-            <ion-select-option value="Florida">Florida</ion-select-option>
-            <ion-select-option value="Hualqui">Hualqui</ion-select-option>
-            <ion-select-option value="Mulchén">Mulchén</ion-select-option>
-            <ion-select-option value="Quilleco">Quilleco</ion-select-option>
-            <ion-select-option value="Cabrero">Cabrero</ion-select-option>
-            <ion-select-option value="Nacimiento">Nacimiento</ion-select-option>
-            <ion-select-option value="Antuco">Antuco</ion-select-option>
-            <ion-select-option value="Penco">Penco</ion-select-option>
-            <ion-select-option value="San Rosendo">San Rosendo</ion-select-option>
-            <ion-select-option value="Negrete">Negrete</ion-select-option>
-            <ion-select-option value="Curanilahue">Curanilahue</ion-select-option>
+      <ion-select-option *ngFor="let comuna of comunasDisponibles" [value]="comuna">{{comuna}}</ion-select-option>
     </ion-select>
   </ion-item>
 

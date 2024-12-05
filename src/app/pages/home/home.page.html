@@ -84,7 +84,7 @@
           <ion-label>
             <h2>{{ viajes.comuna }}</h2>
             <p>Asientos disponibles: {{ viajes.asientosDisponibles }}</p>
-            <p>Fecha: {{ viajes.fecha }}</p>
+            <p>{{ viajes.fecha | date: 'EEEE d \'de\' MMMM' : 'es-LA' }}</p>
             <p>Hora: {{ viajes.hora }}</p>
           </ion-label>
     

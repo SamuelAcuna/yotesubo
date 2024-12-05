@@ -11,18 +11,22 @@ export class VistaViajesPage implements OnInit {
   viajes: Viaje[] = [];  // Lista de viajes filtrados
   viajesOriginales: Viaje[] = [];  // Lista de viajes sin filtrar
   comunaSeleccionada: string = '';  // Variable para almacenar la comuna seleccionada
+  comunasDisponibles: string[] = [];
 
   constructor(private firestoreService: FirestoreService) {}
 
   ngOnInit() {
     this.loadViajes();  // Cargar todos los viajes al inicio
+    
   }
 
   // Cargar los viajes desde el servicio (ejemplo con Firestore)
   loadViajes() {
     this.firestoreService.getViajes().subscribe((viajes) => {
-      this.viajesOriginales = viajes;  // Guardar todos los viajes sin filtrar
-      this.viajes = viajes;  // Inicialmente mostramos todos los viajes
+      this.viajesOriginales = viajes.filter(viaje => viaje.estado === 'Disponible' && viaje.isActive === true);
+      this.viajes = this.viajesOriginales;  // Inicialmente mostramos todos los viajes
+      console.log('Viajes:', this.viajes);
+      this.obtenerComunasDisponibles();  // Obtener las comunas disponibles
     });
   }
 
@@ -35,5 +39,10 @@ export class VistaViajesPage implements OnInit {
       // Si no se ha seleccionado ninguna comuna, mostrar todos los viajes
       this.viajes = this.viajesOriginales;
     }
+  }
+  obtenerComunasDisponibles() {
+    const comunas = this.viajes.map(viaje => viaje.comuna);  // Extrae las comunas de los viajes
+    this.comunasDisponibles = [...new Set(comunas)];  // Elimina duplicados usando Set
+    console.log('Comunas disponibles:', this.comunasDisponibles);
   }
 }
