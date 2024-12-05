@@ -10,7 +10,10 @@
 
 <ion-content class="ion-padding">
   <ion-card>
-    <img src="assets/img/centro_concepcion.png" alt="Imagen del viaje" class="viaje-imagen" />
+    <img src="{{viaje?.imagen}}" 
+    alt="Imagen del viaje" 
+    class="viaje-imagen"
+    onerror="this.src='assets/img/default.jpg'"/>
 
     <ion-card-header>
       <ion-card-title>Datos del Viaje</ion-card-title>

@@ -40,28 +40,10 @@
       <ion-col *ngFor="let viaje of viajes" size="12" size-md="6" size-lg="4">
         <div *ngIf="viaje.estado === 'Disponible'">
         <ion-card>
-          <div [ngSwitch]="viaje.comuna">
-            
-            <img alt="Imagen del viaje" *ngSwitchDefault alt="Imagen por defecto" [src]="'assets/img/default.jpg'" />
-            <img *ngSwitchCase="'Concepción'" alt="Imagen de Concepción" [src]="'assets/img/concepcion.jpg'" />
-            <img *ngSwitchCase="'Talcahuano'" alt="Imagen de Talcahuano" [src]="'assets/img/talcahuano.jpg'" />
-            <img *ngSwitchCase="'San Pedro de la Paz'" alt="Imagen de San Pedro de la Paz" [src]="'assets/img/sanpedro.jpg'" />
-            <img *ngSwitchCase="'Chiguayante'" alt="Imagen de Chiguayante" [src]="'assets/img/chiguayante.jpg'" />
-            <img *ngSwitchCase="'Hualpén'" alt="Imagen de Hualpén" [src]="'assets/img/hualpen.jpg'" />
-            <img *ngSwitchCase="'Penco'" alt="Imagen de Penco" [src]="'assets/img/penco.jpg'" />
-            <!-- <img *ngSwitchCase="'Lota'" alt="Imagen de Lota" [src]="'assets/img/lota.jpg'" />
-            <img *ngSwitchCase="'Tomé'" alt="Imagen de Tomé" [src]="'assets/img/tome.jpg'" />
-            <img *ngSwitchCase="'Florida'" alt="Imagen de Florida" [src]="'assets/img/florida.jpg'" />
-            <img *ngSwitchCase="'Hualqui'" alt="Imagen de Hualqui" [src]="'assets/img/hualqui.jpg'" />
-            <img *ngSwitchCase="'Mulchén'" alt="Imagen de Mulchén" [src]="'assets/img/mulchen.jpg'" />
-            <img *ngSwitchCase="'Quilleco'" alt="Imagen de Quilleco" [src]="'assets/img/quilleco.jpg'" />
-            <img *ngSwitchCase="'Cabrero'" alt="Imagen de Cabrero" [src]="'assets/img/cabrero.jpg'" />
-            <img *ngSwitchCase="'Nacimiento'" alt="Imagen de Nacimiento" [src]="'assets/img/nacimiento.jpg'" />
-            <img *ngSwitchCase="'Antuco'" alt="Imagen de Antuco" [src]="'assets/img/antuco.jpg'" />
-            <img *ngSwitchCase="'San Rosendo'" alt="Imagen de San Rosendo" [src]="'assets/img/sanrosendo.jpg'" />
-            <img *ngSwitchCase="'Negrete'" alt="Imagen de Negrete" [src]="'assets/img/negrete.jpg'" />
-            <img *ngSwitchCase="'Curanilahue'" alt="Imagen de Curanilahue" [src]="'assets/img/curanilahue.jpg'" /> -->
-          </div>
+          <img src="{{viaje?.imagen}}" 
+          alt="Imagen del viaje" 
+          class="viaje-imagen"
+          onerror="this.src='assets/img/default.jpg'"/>
           
           <ion-card-header>
             <ion-card-title>{{ viaje.comuna }}</ion-card-title>

@@ -3,84 +3,115 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="home"></ion-back-button>
     </ion-buttons>
-    <ion-title class="ion-text-capitalize ion-text-center" mode="md"> Viajes</ion-title>
+    <ion-title class="ion-text-center" mode="md">Crear Viaje - Paso {{ currentStep }} de {{ maxSteps }}</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Nuevo viaje</ion-card-title>
-    </ion-card-header>
+  <ion-grid style="min-height: 100vh;">
+    <ion-row>
+      <ion-col size="12" size-md="8" size-lg="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title class="ion-text-center">Nuevo Viaje</ion-card-title>
+          </ion-card-header>
 
-    <ion-card-content>
-      <!-- Formulario -->
-      <form #form="ngForm" (ngSubmit)="createTrip(form)">
-        
-        <!-- Comuna -->
-        <ion-item>
-          <ion-label>Comuna</ion-label>
-          <ion-select [(ngModel)]="comuna" name="comuna" required placeholder="Comuna">
-            <ion-select-option value="Concepción">Concepción</ion-select-option>
-            <ion-select-option value="Talcahuano">Talcahuano</ion-select-option>
-            <ion-select-option value="San Pedro de la Paz">San Pedro de la Paz</ion-select-option>
-            <ion-select-option value="Chiguayante">Chiguayante</ion-select-option>
-            <ion-select-option value="Hualpén">Hualpén</ion-select-option>
-            <ion-select-option value="Penco">Penco</ion-select-option>
-            <ion-select-option value="Lota">Lota</ion-select-option>
-            <ion-select-option value="Tomé">Tomé</ion-select-option>
-            <ion-select-option value="Florida">Florida</ion-select-option>
-            <ion-select-option value="Hualqui">Hualqui</ion-select-option>
-            <ion-select-option value="Mulchén">Mulchén</ion-select-option>
-            <ion-select-option value="Quilleco">Quilleco</ion-select-option>
-            <ion-select-option value="Cabrero">Cabrero</ion-select-option>
-            <ion-select-option value="Nacimiento">Nacimiento</ion-select-option>
-            <ion-select-option value="Antuco">Antuco</ion-select-option>
-            <ion-select-option value="Penco">Penco</ion-select-option>
-            <ion-select-option value="San Rosendo">San Rosendo</ion-select-option>
-            <ion-select-option value="Negrete">Negrete</ion-select-option>
-            <ion-select-option value="Curanilahue">Curanilahue</ion-select-option>
-          </ion-select>
-        </ion-item>
-        
-        <!-- Fecha -->
-        <ion-item >
-          <ion-datetime   [(ngModel)]="fecha" name="fecha" displayFormat="MMM DD, YYYY HH:mm" min="{{ today }}" required></ion-datetime>
-        </ion-item>
+          <ion-card-content>
+            <!-- Definir el formulario -->
+            <form #form="ngForm">
+              <!-- Paso 1: Ingresar Destino -->
+              <div *ngIf="currentStep === 1">
+                <ion-item>
+                  <ion-label position="floating">Ingresa una dirección</ion-label>
+                  <ion-input 
+                    name="address"
+                    [(ngModel)]="address" 
+                    (ionInput)="searchAddress($event.target.value ? $event.target.value.toString() : '')"
+                    debounce="500">
+                  </ion-input>
+                </ion-item>
+                <ion-list *ngIf="suggestions.length > 0">
+                  <ion-item *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+                    <ion-label>{{ suggestion }}</ion-label>
+                  </ion-item>
+                </ion-list>
+              </div>
 
-        <!-- Seleccionar Auto -->
-        <ion-item>
-          <ion-label>Seleccionar Auto</ion-label>
-          <ion-select [(ngModel)]="selectedCar" name="selectedCar" required placeholder="Seleccione un auto">
-            <ion-select-option *ngFor="let car of cars" [value]="car.id">
-              <ion-item>
-                <ion-label>
-                  <h2>{{car.patente}}</h2>
-                </ion-label>
-              </ion-item>
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
+              <!-- Paso 2: Fecha y Hora -->
+              <div *ngIf="currentStep === 2">
+                <ion-item>
+                  <ion-datetime 
+                    name="fecha"
+                    [(ngModel)]="fecha" 
+                    displayFormat="MMM DD, YYYY HH:mm" 
+                    min="{{ today }}" 
+                    required>
+                  </ion-datetime>
+                </ion-item>
+              </div>
 
-        <!-- Asientos Disponibles -->
-        <ion-item>
-          <ion-label>Asientos Disponibles</ion-label>
-          <ion-input slot="end" [(ngModel)]="asientosDisponibles" name="asientosDisponibles" type="number" min="1" max="10" id="asientosDisponibles" required></ion-input>
-          <ion-buttons slot="end">
-            <ion-button (click)="incrementSeats()">↑</ion-button>
-            <ion-button (click)="decrementSeats()">↓</ion-button>
-          </ion-buttons>
-        </ion-item>
+              <!-- Paso 3: Detalles -->
+              <div *ngIf="currentStep === 3">
+                <ion-item>
+                  <ion-label>Seleccionar Auto</ion-label>
+                  <ion-select 
+                    name="selectedCar"
+                    [(ngModel)]="selectedCar" 
+                    placeholder="Seleccione un auto"
+                    (ionChange)="onCarChange()"
+                    required>
+                    
+                    <ion-select-option *ngFor="let car of cars" [value]="car">
+                      {{ car.patente }}
+                    </ion-select-option>
+                  </ion-select>
+                
+                  <!-- Botón para redirigir a otra página -->
+                  <ion-button 
+                    expand="block" 
+                    fill="clear" 
+                    shape="round" 
+                    routerLink="/crear-autp">
+                    Añadir auto
+                  </ion-button>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Asientos Disponibles</ion-label>
+                  <ion-input 
+                    slot="end"
+                    name="asientosDisponibles"
+                    [(ngModel)]="asientosDisponibles" 
+                    type="number" 
+                    min="1" 
+                    max="4">
+                  </ion-input>
+                  <ion-buttons slot="end">
+                    <ion-button (click)="incrementSeats()">↑</ion-button>
+                    <ion-button (click)="decrementSeats()">↓</ion-button>
+                  </ion-buttons>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Precio</ion-label>
+                  $<ion-input name="precio" value="" slot="end" [(ngModel)]="precio" type="number"></ion-input>
+                </ion-item>
+              </div>
 
-        <!-- Precio -->
-        <ion-item>
-          <ion-label>Precio</ion-label>
-          <ion-input slot="end" style="direction: rtl; text-align: right;" [(ngModel)]="precio" name="precio" type="text" placeholder="1.000" maxlength="5" required></ion-input>
-        </ion-item>
-
-        <!-- Botón para crear viaje -->
-        <ion-button type="submit" [disabled]="form.invalid" expand="full">Ofrecer Viaje</ion-button>
-      </form>
-    </ion-card-content>
-  </ion-card>
+              <!-- Controles de Navegación -->
+              <div class="ion-text-center">
+                <ion-button (click)="prevStep()" [disabled]="currentStep === 1">Anterior</ion-button>
+                <ion-button 
+                  *ngIf="currentStep < maxSteps" 
+                  (click)="nextStep()" 
+                  [disabled]="!canProceedToNextStep()">Siguiente</ion-button>
+                <ion-button 
+                  *ngIf="currentStep === maxSteps" 
+                  (click)="createTrip(form)" 
+                  [disabled]="form.invalid"
+                  color="primary">Crear Viaje</ion-button>
+              </div>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

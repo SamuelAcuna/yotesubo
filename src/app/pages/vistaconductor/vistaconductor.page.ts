@@ -6,6 +6,8 @@ import { User } from 'src/app/interfaces/user';
 import { EstadoViaje, Viaje } from 'src/app/interfaces/viajes';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { EmailService } from 'src/app/services/email.service';
+
 
 @Component({
   selector: 'app-vistaconductor',
@@ -24,7 +26,8 @@ export class VistaconductorPage implements OnInit {
               private firestoreService: FirestoreService,
               private route: ActivatedRoute,
               private authService: AuthService,
-              private toastController: ToastController) { }
+              private toastController: ToastController,
+              private email: EmailService) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -47,6 +50,7 @@ export class VistaconductorPage implements OnInit {
     this.firestoreService.getViajeById(id).subscribe((data) => {
       if (data) {
         this.viaje = data;
+        console.log('Viaje encontrado:', this.viaje);
         this.saveToLocalStorage('viaje', this.viaje); // Guardar los datos de Firebase en localStorage
         if (this.viaje.userId) {
           this.loadConductor(this.viaje.userId);
@@ -125,6 +129,18 @@ export class VistaconductorPage implements OnInit {
         this.showToast('Viaje completado');
         this.navCtrl.navigateBack('/home');
       }
+      if (this.viaje.pasajeros && this.viaje.pasajeros.length > 0) {
+        this.viaje.pasajeros.forEach((pasajero) => {
+          if (pasajero.email) {
+            const fromName = this.conductor ? this.conductor.nombreCompleto : 'Conductor';
+            const fromEmail = pasajero ? pasajero.email : '';
+            const toName = pasajero.nombreCompleto;
+            const message = `Estimado/a ${toName}, su viaje con estado ${estado} ha sido actualizado.`;
+            
+            this.email.sendEmailreserva(fromName, fromEmail, toName, message, estado);
+          }
+        });
+      }
       this.firestoreService.updateDocument('viajes', this.viaje.id, { 
         estado: this.viaje.estado,
         isActive: this.viaje.isActive
@@ -162,4 +178,5 @@ export class VistaconductorPage implements OnInit {
     });
     await toast.present();
   }
+  
 }

@@ -28,4 +28,7 @@ export class LocaldbService {
   clearData() {
     this.storage.clear();
   }
+  async saveImage(key: string, image: string): Promise<void> {
+    await this.saveData(key, image);
+  }
 }
